@@ -1,0 +1,26 @@
+{
+    "name": "scafera/layered",
+    "description": "Layered architecture conventions for the Scafera framework",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4",
+        "scafera/kernel": "^1.0 || dev-main"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^12.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Scafera\\Layered\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Scafera\\Layered\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "scafera-architecture": "Scafera\\Layered\\LayeredArchitecture"
+    }
+}
