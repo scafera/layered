@@ -60,9 +60,9 @@ class LayeredArchitectureTest extends TestCase
         $this->assertArrayHasKey('tests/Command', $structure);
     }
 
-    public function testValidatorsReturnEmpty(): void
+    public function testValidatorsReturnEightClasses(): void
     {
-        $this->assertSame([], $this->arch->getValidators());
+        $this->assertCount(8, $this->arch->getValidators());
     }
 
     public function testGeneratorsReturnEmpty(): void
