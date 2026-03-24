@@ -36,19 +36,23 @@ class TestSyncAdvisor implements AdvisorInterface
         $unstaged = $this->parseFiles($output, unstagedOnly: true);
 
         $hints = [];
+        $reported = [];
 
         // Case 1: file changed (any status) but its test is not in git status at all
-        $this->checkParity($allChanged, $allChanged, $hints, 'was modified but %s was not — consider updating the test');
+        $this->checkParity($allChanged, $allChanged, $hints, $reported, 'was modified but %s was not — consider updating the test');
 
         // Case 2: file has unstaged working tree changes but its test doesn't
         // e.g. controller is AM (staged + edited again) but test is A (staged only)
-        $this->checkParity($unstaged, $unstaged, $hints, 'has unstaged changes but %s does not — did you forget to update the test?');
+        $this->checkParity($unstaged, $unstaged, $hints, $reported, 'has unstaged changes but %s does not — did you forget to update the test?');
 
         return $hints;
     }
 
-    /** @param list<string> $hints */
-    private function checkParity(array $sourceFiles, array $targetFiles, array &$hints, string $message): void
+    /**
+     * @param list<string> $hints
+     * @param array<string, true> $reported
+     */
+    private function checkParity(array $sourceFiles, array $targetFiles, array &$hints, array &$reported, string $message): void
     {
         $pairs = [
             '#^src/Controller/(.+)\.php$#' => 'tests/Controller/',
@@ -57,6 +61,10 @@ class TestSyncAdvisor implements AdvisorInterface
 
         foreach ($pairs as $pattern => $testDir) {
             foreach ($sourceFiles as $file) {
+                if (isset($reported[$file])) {
+                    continue;
+                }
+
                 if (!preg_match($pattern, $file, $m)) {
                     continue;
                 }
@@ -65,6 +73,7 @@ class TestSyncAdvisor implements AdvisorInterface
 
                 if (!in_array($testFile, $targetFiles, true)) {
                     $hints[] = $file . ' ' . sprintf($message, $testFile);
+                    $reported[$file] = true;
                 }
             }
         }
