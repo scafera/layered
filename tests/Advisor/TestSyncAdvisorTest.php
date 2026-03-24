@@ -13,26 +13,21 @@ class TestSyncAdvisorTest extends TestCase
     {
         $advisor = new FakeAdvisor(hasGit: false, revParseOutput: '', porcelain: '');
 
-        $status = $advisor->canRun('/dummy');
-        $this->assertFalse($status->ready);
-        $this->assertSame('git is not installed', $status->reason);
+        $this->assertSame('git is not installed', $advisor->skipped('/dummy'));
     }
 
     public function testSkippedWhenNotGitRepo(): void
     {
         $advisor = new FakeAdvisor(hasGit: true, revParseOutput: 'fatal: not a git repository', porcelain: '');
 
-        $status = $advisor->canRun('/dummy');
-        $this->assertFalse($status->ready);
-        $this->assertSame('not a git repository', $status->reason);
+        $this->assertSame('not a git repository', $advisor->skipped('/dummy'));
     }
 
     public function testReadyWhenGitRepoExists(): void
     {
         $advisor = new FakeAdvisor(hasGit: true, revParseOutput: 'true', porcelain: '');
 
-        $status = $advisor->canRun('/dummy');
-        $this->assertTrue($status->ready);
+        $this->assertNull($advisor->skipped('/dummy'));
     }
 
     public function testNoHintsWhenNoModifiedFiles(): void

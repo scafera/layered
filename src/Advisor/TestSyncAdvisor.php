@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Scafera\Layered\Advisor;
 
 use Scafera\Kernel\Contract\AdvisorInterface;
-use Scafera\Kernel\Contract\AdvisorStatus;
 
 class TestSyncAdvisor implements AdvisorInterface
 {
@@ -14,19 +13,13 @@ class TestSyncAdvisor implements AdvisorInterface
         return 'Test sync';
     }
 
-    public function canRun(string $projectDir): AdvisorStatus
+    public function skipped(string $projectDir): ?string
     {
         if (!$this->hasGit()) {
-            return AdvisorStatus::skipped('git is not installed');
+            return 'git is not installed';
         }
 
-        $repoStatus = $this->checkGitRepo($projectDir);
-
-        if ($repoStatus !== null) {
-            return AdvisorStatus::skipped($repoStatus);
-        }
-
-        return AdvisorStatus::ready();
+        return $this->checkGitRepo($projectDir);
     }
 
     public function advise(string $projectDir): array
