@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Scafera\Layered;
 
 use Scafera\Kernel\Contract\ArchitecturePackageInterface;
+use Scafera\Layered\Advisor\TestSyncAdvisor;
 use Scafera\Layered\Validator\CommandTestParityValidator;
 use Scafera\Layered\Validator\ControllerLocationValidator;
 use Scafera\Layered\Validator\ControllerNamingValidator;
@@ -65,5 +66,12 @@ class LayeredArchitecture implements ArchitecturePackageInterface
     public function getGenerators(): array
     {
         return [];
+    }
+
+    public function getAdvisors(): array
+    {
+        return [
+            TestSyncAdvisor::class,
+        ];
     }
 }
