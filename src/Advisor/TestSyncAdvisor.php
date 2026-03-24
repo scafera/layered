@@ -20,8 +20,10 @@ class TestSyncAdvisor implements AdvisorInterface
             return AdvisorStatus::skipped('git is not installed');
         }
 
-        if (!$this->isGitRepo($projectDir)) {
-            return AdvisorStatus::skipped('not a git repository');
+        $repoStatus = $this->checkGitRepo($projectDir);
+
+        if ($repoStatus !== null) {
+            return AdvisorStatus::skipped($repoStatus);
         }
 
         return AdvisorStatus::ready();
@@ -29,38 +31,43 @@ class TestSyncAdvisor implements AdvisorInterface
 
     public function advise(string $projectDir): array
     {
-        $modified = $this->getModifiedFiles($projectDir);
-        if ($modified === []) {
-            return [];
-        }
+        $output = $this->exec($this->git($projectDir) . ' status --porcelain 2>/dev/null');
+        $allChanged = $this->parseFiles($output);
+        $unstaged = $this->parseFiles($output, unstagedOnly: true);
 
         $hints = [];
 
-        foreach ($modified as $file) {
-            if (!preg_match('#^src/Controller/(.+)\.php$#', $file, $m)) {
-                continue;
-            }
+        // Case 1: file changed (any status) but its test is not in git status at all
+        $this->checkParity($allChanged, $allChanged, $hints, 'was modified but %s was not — consider updating the test');
 
-            $testFile = 'tests/Controller/' . $m[1] . 'Test.php';
-
-            if (!in_array($testFile, $modified, true)) {
-                $hints[] = $file . ' was modified but ' . $testFile . ' was not — consider updating the test';
-            }
-        }
-
-        foreach ($modified as $file) {
-            if (!preg_match('#^src/Command/(.+)\.php$#', $file, $m)) {
-                continue;
-            }
-
-            $testFile = 'tests/Command/' . $m[1] . 'Test.php';
-
-            if (!in_array($testFile, $modified, true)) {
-                $hints[] = $file . ' was modified but ' . $testFile . ' was not — consider updating the test';
-            }
-        }
+        // Case 2: file has unstaged working tree changes but its test doesn't
+        // e.g. controller is AM (staged + edited again) but test is A (staged only)
+        $this->checkParity($unstaged, $unstaged, $hints, 'has unstaged changes but %s does not — did you forget to update the test?');
 
         return $hints;
+    }
+
+    /** @param list<string> $hints */
+    private function checkParity(array $sourceFiles, array $targetFiles, array &$hints, string $message): void
+    {
+        $pairs = [
+            '#^src/Controller/(.+)\.php$#' => 'tests/Controller/',
+            '#^src/Command/(.+)\.php$#' => 'tests/Command/',
+        ];
+
+        foreach ($pairs as $pattern => $testDir) {
+            foreach ($sourceFiles as $file) {
+                if (!preg_match($pattern, $file, $m)) {
+                    continue;
+                }
+
+                $testFile = $testDir . $m[1] . 'Test.php';
+
+                if (!in_array($testFile, $targetFiles, true)) {
+                    $hints[] = $file . ' ' . sprintf($message, $testFile);
+                }
+            }
+        }
     }
 
     private function hasGit(): bool
@@ -70,17 +77,36 @@ class TestSyncAdvisor implements AdvisorInterface
         return trim($result) !== '';
     }
 
-    private function isGitRepo(string $projectDir): bool
+    /** @return string|null null = ready, string = skip reason */
+    private function checkGitRepo(string $projectDir): ?string
     {
-        $result = $this->exec('git -C ' . escapeshellarg($projectDir) . ' rev-parse --is-inside-work-tree 2>/dev/null');
+        $result = $this->exec($this->git($projectDir) . ' rev-parse --is-inside-work-tree 2>&1');
 
-        return trim($result) === 'true';
+        if (trim($result) === 'true') {
+            return null;
+        }
+
+        return 'not a git repository';
     }
 
-    /** @return list<string> */
-    private function getModifiedFiles(string $projectDir): array
+    private function git(string $projectDir): string
     {
-        $output = $this->exec('git -C ' . escapeshellarg($projectDir) . ' status --porcelain 2>/dev/null');
+        $dir = escapeshellarg($projectDir);
+
+        return 'git -c safe.directory=' . $dir . ' -C ' . $dir;
+    }
+
+    /**
+     * Parses git status --porcelain output.
+     *
+     * Porcelain format: XY filename
+     * - X = index status, Y = working tree status
+     * - unstagedOnly: only files where Y is not a space (working tree changes)
+     *
+     * @return list<string>
+     */
+    private function parseFiles(string $output, bool $unstagedOnly = false): array
+    {
         $files = [];
 
         foreach (explode("\n", $output) as $line) {
@@ -88,7 +114,10 @@ class TestSyncAdvisor implements AdvisorInterface
                 continue;
             }
 
-            // porcelain format: XY filename (status is first 2 chars, space, then path)
+            if ($unstagedOnly && $line[1] === ' ') {
+                continue;
+            }
+
             $file = substr($line, 3);
 
             // Handle renames: "R  old -> new"
