@@ -120,7 +120,7 @@ class TestSyncAdvisorTest extends TestCase
     {
         $advisor = new FakeAdvisor(hasGit: true, revParseOutput: 'true', porcelain:
             " M src/Service/OrderService.php\n" .
-            " M config/overrides.yaml\n"
+            " M config/config.yaml\n"
         );
 
         $this->assertSame([], $advisor->advise('/dummy'));
