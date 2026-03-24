@@ -9,23 +9,42 @@ use Scafera\Layered\Advisor\TestSyncAdvisor;
 
 class TestSyncAdvisorTest extends TestCase
 {
-    public function testNoHintsWhenNotGitRepo(): void
+    public function testSkippedWhenGitNotInstalled(): void
     {
-        $advisor = new FakeAdvisor(isGit: false, files: []);
+        $advisor = new FakeAdvisor(hasGit: false, isGit: false, files: []);
 
-        $this->assertSame([], $advisor->advise('/dummy'));
+        $status = $advisor->canRun('/dummy');
+        $this->assertFalse($status->ready);
+        $this->assertSame('git is not installed', $status->reason);
+    }
+
+    public function testSkippedWhenNotGitRepo(): void
+    {
+        $advisor = new FakeAdvisor(hasGit: true, isGit: false, files: []);
+
+        $status = $advisor->canRun('/dummy');
+        $this->assertFalse($status->ready);
+        $this->assertSame('not a git repository', $status->reason);
+    }
+
+    public function testReadyWhenGitRepoExists(): void
+    {
+        $advisor = new FakeAdvisor(hasGit: true, isGit: true, files: []);
+
+        $status = $advisor->canRun('/dummy');
+        $this->assertTrue($status->ready);
     }
 
     public function testNoHintsWhenNoModifiedFiles(): void
     {
-        $advisor = new FakeAdvisor(isGit: true, files: []);
+        $advisor = new FakeAdvisor(hasGit: true, isGit: true, files: []);
 
         $this->assertSame([], $advisor->advise('/dummy'));
     }
 
     public function testNoHintWhenControllerAndTestBothModified(): void
     {
-        $advisor = new FakeAdvisor(isGit: true, files: [
+        $advisor = new FakeAdvisor(hasGit: true, isGit: true, files: [
             'src/Controller/Home.php',
             'tests/Controller/HomeTest.php',
         ]);
@@ -35,7 +54,7 @@ class TestSyncAdvisorTest extends TestCase
 
     public function testHintWhenControllerModifiedButTestNot(): void
     {
-        $advisor = new FakeAdvisor(isGit: true, files: [
+        $advisor = new FakeAdvisor(hasGit: true, isGit: true, files: [
             'src/Controller/Home.php',
         ]);
 
@@ -47,7 +66,7 @@ class TestSyncAdvisorTest extends TestCase
 
     public function testHintForNestedController(): void
     {
-        $advisor = new FakeAdvisor(isGit: true, files: [
+        $advisor = new FakeAdvisor(hasGit: true, isGit: true, files: [
             'src/Controller/Api/Item/Create.php',
         ]);
 
@@ -58,7 +77,7 @@ class TestSyncAdvisorTest extends TestCase
 
     public function testHintWhenCommandModifiedButTestNot(): void
     {
-        $advisor = new FakeAdvisor(isGit: true, files: [
+        $advisor = new FakeAdvisor(hasGit: true, isGit: true, files: [
             'src/Command/Import.php',
         ]);
 
@@ -70,7 +89,7 @@ class TestSyncAdvisorTest extends TestCase
 
     public function testNoHintWhenCommandAndTestBothModified(): void
     {
-        $advisor = new FakeAdvisor(isGit: true, files: [
+        $advisor = new FakeAdvisor(hasGit: true, isGit: true, files: [
             'src/Command/Import.php',
             'tests/Command/ImportTest.php',
         ]);
@@ -80,7 +99,7 @@ class TestSyncAdvisorTest extends TestCase
 
     public function testIgnoresNonControllerNonCommandFiles(): void
     {
-        $advisor = new FakeAdvisor(isGit: true, files: [
+        $advisor = new FakeAdvisor(hasGit: true, isGit: true, files: [
             'src/Service/OrderService.php',
             'config/overrides.yaml',
         ]);
@@ -90,7 +109,7 @@ class TestSyncAdvisorTest extends TestCase
 
     public function testMultipleHints(): void
     {
-        $advisor = new FakeAdvisor(isGit: true, files: [
+        $advisor = new FakeAdvisor(hasGit: true, isGit: true, files: [
             'src/Controller/Home.php',
             'src/Controller/Api/Status.php',
             'tests/Controller/Api/StatusTest.php',
@@ -109,6 +128,7 @@ class FakeAdvisor extends TestSyncAdvisor
 {
     /** @param list<string> $files */
     public function __construct(
+        private readonly bool $hasGit,
         private readonly bool $isGit,
         private readonly array $files,
     ) {
@@ -116,6 +136,10 @@ class FakeAdvisor extends TestSyncAdvisor
 
     protected function exec(string $command): string
     {
+        if (str_contains($command, 'which git')) {
+            return $this->hasGit ? '/usr/bin/git' : '';
+        }
+
         if (str_contains($command, 'rev-parse')) {
             return $this->isGit ? 'true' : 'false';
         }
