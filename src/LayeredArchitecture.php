@@ -14,6 +14,7 @@ use Scafera\Layered\Validator\ImplicitExecutionValidator;
 use Scafera\Layered\Validator\SingleActionControllerValidator;
 use Scafera\Layered\Validator\NamespaceConventionValidator;
 use Scafera\Layered\Validator\ServiceLocationValidator;
+use Scafera\Layered\Validator\TestsDirectoryValidator;
 
 class LayeredArchitecture implements ArchitecturePackageInterface
 {
@@ -52,6 +53,7 @@ class LayeredArchitecture implements ArchitecturePackageInterface
     public function getValidators(): array
     {
         return [
+            TestsDirectoryValidator::class,
             ControllerLocationValidator::class,
             ControllerTestParityValidator::class,
             CommandTestParityValidator::class,
