@@ -6,6 +6,8 @@ namespace Scafera\Layered;
 
 use Scafera\Kernel\Contract\ArchitecturePackageInterface;
 use Scafera\Layered\Advisor\TestSyncAdvisor;
+use Scafera\Layered\Generator\ControllerGenerator;
+use Scafera\Layered\Generator\ServiceGenerator;
 use Scafera\Layered\Validator\CommandTestParityValidator;
 use Scafera\Layered\Validator\ControllerLocationValidator;
 use Scafera\Layered\Validator\ControllerNamingValidator;
@@ -67,7 +69,10 @@ class LayeredArchitecture implements ArchitecturePackageInterface
 
     public function getGenerators(): array
     {
-        return [];
+        return [
+            ControllerGenerator::class,
+            ServiceGenerator::class,
+        ];
     }
 
     public function getAdvisors(): array

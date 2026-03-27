@@ -65,9 +65,9 @@ class LayeredArchitectureTest extends TestCase
         $this->assertCount(9, $this->arch->getValidators());
     }
 
-    public function testGeneratorsReturnEmpty(): void
+    public function testGeneratorsReturnTwoClasses(): void
     {
-        $this->assertSame([], $this->arch->getGenerators());
+        $this->assertCount(2, $this->arch->getGenerators());
     }
 
     public function testAdvisorsReturnOneClass(): void
