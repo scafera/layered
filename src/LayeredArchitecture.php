@@ -45,6 +45,7 @@ class LayeredArchitecture implements ArchitecturePackageInterface
             'src/Controller' => 'Single-action controllers with attribute routing',
             'src/Service' => 'Business logic services',
             'src/Entity' => 'Doctrine entities',
+            'src/Repository' => 'Data access repositories',
             'src/Command' => 'Console commands',
             'tests/Controller' => 'Controller tests (WebTestCase)',
             'tests/Service' => 'Service unit tests',
