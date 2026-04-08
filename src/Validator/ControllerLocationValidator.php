@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Scafera\Layered\Validator;
 
 use Scafera\Kernel\Contract\ValidatorInterface;
+use Scafera\Kernel\Tool\FileFinder;
 
 final class ControllerLocationValidator implements ValidatorInterface
 {
@@ -23,7 +24,7 @@ final class ControllerLocationValidator implements ValidatorInterface
         $violations = [];
         $srcDir = $projectDir . '/src';
 
-        foreach ($this->findPhpFiles($srcDir) as $file) {
+        foreach (FileFinder::findPhpFiles($srcDir) as $file) {
             $relative = str_replace($srcDir . '/', '', $file);
             $contents = file_get_contents($file);
 
@@ -42,26 +43,5 @@ final class ControllerLocationValidator implements ValidatorInterface
     private function isController(string $contents): bool
     {
         return (bool) preg_match('/use\s+Scafera\\\\Kernel\\\\Http\\\\Route\b/', $contents);
-    }
-
-    /** @return list<string> */
-    private function findPhpFiles(string $dir): array
-    {
-        if (!is_dir($dir)) {
-            return [];
-        }
-
-        $files = [];
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS),
-        );
-
-        foreach ($iterator as $file) {
-            if ($file->getExtension() === 'php') {
-                $files[] = $file->getPathname();
-            }
-        }
-
-        return $files;
     }
 }

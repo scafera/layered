@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Scafera\Layered\Validator;
 
 use Scafera\Kernel\Contract\ValidatorInterface;
+use Scafera\Kernel\Tool\FileFinder;
 
 final class LayerDependencyValidator implements ValidatorInterface
 {
@@ -56,7 +57,7 @@ final class LayerDependencyValidator implements ValidatorInterface
                 continue;
             }
 
-            foreach ($this->findPhpFiles($layerDir) as $file) {
+            foreach (FileFinder::findPhpFiles($layerDir) as $file) {
                 $relative = str_replace($projectDir . '/', '', $file);
                 $contents = file_get_contents($file);
 
@@ -70,22 +71,5 @@ final class LayerDependencyValidator implements ValidatorInterface
         }
 
         return $violations;
-    }
-
-    /** @return list<string> */
-    private function findPhpFiles(string $dir): array
-    {
-        $files = [];
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS),
-        );
-
-        foreach ($iterator as $file) {
-            if ($file->getExtension() === 'php') {
-                $files[] = $file->getPathname();
-            }
-        }
-
-        return $files;
     }
 }

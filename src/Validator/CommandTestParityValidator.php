@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Scafera\Layered\Validator;
 
 use Scafera\Kernel\Contract\ValidatorInterface;
+use Scafera\Kernel\Tool\FileFinder;
 
 final class CommandTestParityValidator implements ValidatorInterface
 {
@@ -22,7 +23,7 @@ final class CommandTestParityValidator implements ValidatorInterface
 
         $violations = [];
 
-        foreach ($this->findPhpFiles($commandDir) as $file) {
+        foreach (FileFinder::findPhpFiles($commandDir) as $file) {
             $relative = str_replace($commandDir . '/', '', $file);
             $testFile = $projectDir . '/tests/Command/' . str_replace('.php', 'Test.php', $relative);
 
@@ -32,22 +33,5 @@ final class CommandTestParityValidator implements ValidatorInterface
         }
 
         return $violations;
-    }
-
-    /** @return list<string> */
-    private function findPhpFiles(string $dir): array
-    {
-        $files = [];
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS),
-        );
-
-        foreach ($iterator as $file) {
-            if ($file->getExtension() === 'php') {
-                $files[] = $file->getPathname();
-            }
-        }
-
-        return $files;
     }
 }

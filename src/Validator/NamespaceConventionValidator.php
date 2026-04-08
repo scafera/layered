@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Scafera\Layered\Validator;
 
 use Scafera\Kernel\Contract\ValidatorInterface;
+use Scafera\Kernel\Tool\FileFinder;
 
 final class NamespaceConventionValidator implements ValidatorInterface
 {
@@ -22,7 +23,7 @@ final class NamespaceConventionValidator implements ValidatorInterface
 
         $violations = [];
 
-        foreach ($this->findPhpFiles($srcDir) as $file) {
+        foreach (FileFinder::findPhpFiles($srcDir) as $file) {
             $relative = str_replace($srcDir . '/', '', $file);
             $contents = file_get_contents($file);
 
@@ -43,22 +44,5 @@ final class NamespaceConventionValidator implements ValidatorInterface
         }
 
         return $violations;
-    }
-
-    /** @return list<string> */
-    private function findPhpFiles(string $dir): array
-    {
-        $files = [];
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS),
-        );
-
-        foreach ($iterator as $file) {
-            if ($file->getExtension() === 'php') {
-                $files[] = $file->getPathname();
-            }
-        }
-
-        return $files;
     }
 }
