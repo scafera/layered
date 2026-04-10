@@ -20,7 +20,7 @@ use Scafera\Layered\Validator\ServiceFinalValidator;
 use Scafera\Layered\Validator\ServiceLocationValidator;
 use Scafera\Layered\Validator\TestsDirectoryValidator;
 
-class LayeredArchitecture implements ArchitecturePackageInterface
+final class LayeredArchitecture implements ArchitecturePackageInterface
 {
     public function getName(): string
     {
@@ -58,32 +58,32 @@ class LayeredArchitecture implements ArchitecturePackageInterface
     public function getValidators(): array
     {
         return [
-            TestsDirectoryValidator::class,
-            ControllerLocationValidator::class,
-            ControllerTestParityValidator::class,
-            CommandTestParityValidator::class,
-            ServiceLocationValidator::class,
-            ServiceFinalValidator::class,
-            NamespaceConventionValidator::class,
-            LayerDependencyValidator::class,
-            ImplicitExecutionValidator::class,
-            SingleActionControllerValidator::class,
-            ControllerNamingValidator::class,
+            new TestsDirectoryValidator(),
+            new ControllerLocationValidator(),
+            new ControllerTestParityValidator(),
+            new CommandTestParityValidator(),
+            new ServiceLocationValidator(),
+            new ServiceFinalValidator(),
+            new NamespaceConventionValidator(),
+            new LayerDependencyValidator(),
+            new ImplicitExecutionValidator(),
+            new SingleActionControllerValidator(),
+            new ControllerNamingValidator(),
         ];
     }
 
     public function getGenerators(): array
     {
         return [
-            ControllerGenerator::class,
-            ServiceGenerator::class,
+            new ControllerGenerator(),
+            new ServiceGenerator(),
         ];
     }
 
     public function getAdvisors(): array
     {
         return [
-            TestSyncAdvisor::class,
+            new TestSyncAdvisor(),
         ];
     }
 }
