@@ -16,6 +16,7 @@ use Scafera\Layered\Validator\ImplicitExecutionValidator;
 use Scafera\Layered\Validator\LayerDependencyValidator;
 use Scafera\Layered\Validator\SingleActionControllerValidator;
 use Scafera\Layered\Validator\NamespaceConventionValidator;
+use Scafera\Layered\Validator\ServiceFinalValidator;
 use Scafera\Layered\Validator\ServiceLocationValidator;
 use Scafera\Layered\Validator\TestsDirectoryValidator;
 
@@ -62,6 +63,7 @@ class LayeredArchitecture implements ArchitecturePackageInterface
             ControllerTestParityValidator::class,
             CommandTestParityValidator::class,
             ServiceLocationValidator::class,
+            ServiceFinalValidator::class,
             NamespaceConventionValidator::class,
             LayerDependencyValidator::class,
             ImplicitExecutionValidator::class,
