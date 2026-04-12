@@ -156,6 +156,12 @@ final class ControllerGenerator implements GeneratorInterface
     private function resolveRoute(string $name): string
     {
         $parts = explode('/', $name);
+
+        if (end($parts) === 'Index') {
+            array_pop($parts);
+            return '/' . implode('/', array_map(fn(string $part) => $this->toKebabCase($part), $parts));
+        }
+
         $segments = array_map(fn(string $part) => $this->toKebabCase($part), $parts);
 
         return '/' . implode('/', $segments);
