@@ -1,0 +1,6 @@
+/config/config.example.yaml
+/public/index.php
+/tests/bootstrap.php
+/tests/phpunit.xml.dist
+/vendor/
+/var/
