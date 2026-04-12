@@ -50,6 +50,18 @@ Non-blocking hints that never affect the exit code:
 
 The test sync advisor requires git and gracefully skips with a reason when prerequisites are not met.
 
+## Generators
+
+Scaffold new files with conventions baked in:
+
+| Generator | Command | What it creates |
+|-----------|---------|-----------------|
+| **Controller** | `scafera make controller <Name>` | Single-action controller + test |
+| **Service** | `scafera make service <Name>` | Final service class + test |
+| **Command** | `scafera make command <Name>` | Console command + test |
+
+All generators support nested names (e.g. `Order/Create`, `Report/Generate`) and reject convention-violating suffixes like `Controller` or `Command`.
+
 ## Project structure
 
 ```
