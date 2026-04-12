@@ -37,7 +37,7 @@ final class CommandGenerator implements GeneratorInterface
             $clean = substr($className, 0, -7);
 
             return new GeneratorResult([], [
-                "Do not use the 'Command' suffix. Use: scafera make command {$this->replaceClassName($name, $clean)}",
+                "Do not use the 'Command' suffix. Use: scafera make:command {$this->replaceClassName($name, $clean)}",
             ]);
         }
 
@@ -75,7 +75,7 @@ final class CommandGenerator implements GeneratorInterface
         #[AsCommand('{$commandName}')]
         final class {$className} extends Command
         {
-            // TODO: Create a service with "scafera make service" and inject it here.
+            // TODO: Create a service with "scafera make:service" and inject it here.
             // public function __construct(
             //     private readonly YourService \$service,
             // ) {

@@ -38,13 +38,13 @@ final class ControllerGenerator implements GeneratorInterface
             $clean = substr($className, 0, -10);
 
             return new GeneratorResult([], [
-                "Do not use the 'Controller' suffix. Use: scafera make controller {$this->replaceClassName($name, $clean)}",
+                "Do not use the 'Controller' suffix. Use: scafera make:controller {$this->replaceClassName($name, $clean)}",
             ]);
         }
 
         if (!str_contains($name, '/') && !preg_match('/^[A-Z][a-z0-9]*$/', $name)) {
             return new GeneratorResult([], [
-                "'{$name}' is a multi-word name and cannot live at root level. Use: scafera make controller <Group>/{$name}",
+                "'{$name}' is a multi-word name and cannot live at root level. Use: scafera make:controller <Group>/{$name}",
             ]);
         }
 
@@ -81,7 +81,7 @@ final class ControllerGenerator implements GeneratorInterface
         #[Route('{$route}', methods: 'GET')]
         final class {$className}
         {
-            // TODO: Create a service with "scafera make service" and inject it here.
+            // TODO: Create a service with "scafera make:service" and inject it here.
             // public function __construct(
             //     private readonly YourService \$service,
             // ) {

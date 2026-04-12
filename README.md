@@ -56,9 +56,9 @@ Scaffold new files with conventions baked in:
 
 | Generator | Command | What it creates |
 |-----------|---------|-----------------|
-| **Controller** | `scafera make controller <Name>` | Single-action controller + test |
-| **Service** | `scafera make service <Name>` | Final service class + test |
-| **Command** | `scafera make command <Name>` | Console command + test |
+| **Controller** | `scafera make:controller <Name>` | Single-action controller + test |
+| **Service** | `scafera make:service <Name>` | Final service class + test |
+| **Command** | `scafera make:command <Name>` | Console command + test |
 
 All generators support nested names (e.g. `Order/Create`, `Report/Generate`) and reject convention-violating suffixes like `Controller` or `Command`.
 
