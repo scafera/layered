@@ -88,4 +88,9 @@ final class LayeredArchitecture implements ArchitecturePackageInterface
             new TestSyncAdvisor(),
         ];
     }
+
+    public function getEntityMapping(): ?array
+    {
+        return ['dir' => 'src/Entity', 'namespace' => 'App\\Entity'];
+    }
 }
