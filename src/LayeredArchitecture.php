@@ -19,6 +19,7 @@ use Scafera\Layered\Validator\SingleActionControllerValidator;
 use Scafera\Layered\Validator\NamespaceConventionValidator;
 use Scafera\Layered\Validator\ServiceFinalValidator;
 use Scafera\Layered\Validator\ServiceLocationValidator;
+use Scafera\Layered\Validator\IntegrationNamingValidator;
 use Scafera\Layered\Validator\ServiceNamingValidator;
 use Scafera\Layered\Validator\TestsDirectoryValidator;
 
@@ -50,6 +51,7 @@ final class LayeredArchitecture implements ArchitecturePackageInterface
             'src/Service' => 'Business logic services',
             'src/Entity' => 'Doctrine entities',
             'src/Repository' => 'Data access repositories',
+            'src/Integration' => 'Third-party service wrappers',
             'src/Command' => 'Console commands',
             'tests/Controller' => 'Controller tests (WebTestCase)',
             'tests/Service' => 'Service unit tests',
@@ -72,6 +74,7 @@ final class LayeredArchitecture implements ArchitecturePackageInterface
             new SingleActionControllerValidator(),
             new ControllerNamingValidator(),
             new ServiceNamingValidator(),
+            new IntegrationNamingValidator(),
         ];
     }
 
