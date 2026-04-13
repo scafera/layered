@@ -30,9 +30,11 @@
         "scafera-architecture": "Scafera\\Layered\\LayeredArchitecture",
         "scafera-scaffold": {
             "files": {
-                ".gitignore": "support/scaffold/.gitignore",
                 "tests/bootstrap.php": "support/scaffold/tests/bootstrap.php",
                 "tests/phpunit.xml.dist": "support/scaffold/tests/phpunit.xml.dist"
+            },
+            "initial-files": {
+                ".gitignore": "support/scaffold/.gitignore"
             },
             "target-map": {
                 "index.php": "public/index.php"
