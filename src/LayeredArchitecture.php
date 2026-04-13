@@ -19,6 +19,7 @@ use Scafera\Layered\Validator\SingleActionControllerValidator;
 use Scafera\Layered\Validator\NamespaceConventionValidator;
 use Scafera\Layered\Validator\ServiceFinalValidator;
 use Scafera\Layered\Validator\ServiceLocationValidator;
+use Scafera\Layered\Validator\ServiceNamingValidator;
 use Scafera\Layered\Validator\TestsDirectoryValidator;
 
 final class LayeredArchitecture implements ArchitecturePackageInterface
@@ -70,6 +71,7 @@ final class LayeredArchitecture implements ArchitecturePackageInterface
             new ImplicitExecutionValidator(),
             new SingleActionControllerValidator(),
             new ControllerNamingValidator(),
+            new ServiceNamingValidator(),
         ];
     }
 

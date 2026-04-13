@@ -31,6 +31,16 @@ final class ServiceGenerator implements GeneratorInterface
     public function generate(string $projectDir, array $inputs, FileWriter $writer): GeneratorResult
     {
         $name = $this->normalizeName($inputs['name']);
+        $className = $this->resolveClassName($name);
+
+        if (str_ends_with($className, 'Service')) {
+            $clean = substr($className, 0, -7);
+
+            return new GeneratorResult([], [
+                "Do not use the 'Service' suffix. Use: scafera make:service {$this->replaceClassName($name, $clean)}",
+            ]);
+        }
+
         $path = 'src/Service/' . $name . '.php';
 
         if ($writer->exists($projectDir, $path)) {
@@ -94,5 +104,17 @@ final class ServiceGenerator implements GeneratorInterface
         }
 
         return $name;
+    }
+
+    private function replaceClassName(string $name, string $newClassName): string
+    {
+        if (!str_contains($name, '/')) {
+            return $newClassName;
+        }
+
+        $parts = explode('/', $name);
+        $parts[array_key_last($parts)] = $newClassName;
+
+        return implode('/', $parts);
     }
 }
