@@ -1,4 +1,5 @@
 /config/config.example.yaml
+/config/config.local.yaml
 /public/index.php
 /tests/bootstrap.php
 /tests/phpunit.xml.dist
