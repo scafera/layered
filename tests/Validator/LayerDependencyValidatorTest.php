@@ -202,6 +202,143 @@ class LayerDependencyValidatorTest extends TestCase
         rmdir($emptyDir);
     }
 
+    public function testPassesWhenServiceImportsIntegration(): void
+    {
+        mkdir($this->tmpDir . '/src/Integration', 0777, true);
+        file_put_contents($this->tmpDir . '/src/Service/PaymentProcessor.php', <<<'PHP'
+        <?php
+        namespace App\Service;
+        use App\Integration\Stripe\PaymentGateway;
+        class PaymentProcessor {}
+        PHP);
+
+        $this->assertSame([], $this->validator->validate($this->tmpDir));
+    }
+
+    public function testPassesWhenIntegrationImportsEntity(): void
+    {
+        mkdir($this->tmpDir . '/src/Integration', 0777, true);
+        file_put_contents($this->tmpDir . '/src/Integration/PaymentGateway.php', <<<'PHP'
+        <?php
+        namespace App\Integration\Stripe;
+        use App\Entity\Order;
+        class PaymentGateway {}
+        PHP);
+
+        $this->assertSame([], $this->validator->validate($this->tmpDir));
+    }
+
+    public function testFailsWhenIntegrationImportsService(): void
+    {
+        mkdir($this->tmpDir . '/src/Integration', 0777, true);
+        file_put_contents($this->tmpDir . '/src/Integration/PaymentGateway.php', <<<'PHP'
+        <?php
+        namespace App\Integration\Stripe;
+        use App\Service\OrderService;
+        class PaymentGateway {}
+        PHP);
+
+        $violations = $this->validator->validate($this->tmpDir);
+        $this->assertCount(1, $violations);
+        $this->assertStringContainsString('Integration/PaymentGateway.php', $violations[0]);
+        $this->assertStringContainsString('Service', $violations[0]);
+    }
+
+    public function testFailsWhenIntegrationImportsRepository(): void
+    {
+        mkdir($this->tmpDir . '/src/Integration', 0777, true);
+        file_put_contents($this->tmpDir . '/src/Integration/PaymentGateway.php', <<<'PHP'
+        <?php
+        namespace App\Integration\Stripe;
+        use App\Repository\OrderRepository;
+        class PaymentGateway {}
+        PHP);
+
+        $violations = $this->validator->validate($this->tmpDir);
+        $this->assertCount(1, $violations);
+        $this->assertStringContainsString('Integration/PaymentGateway.php', $violations[0]);
+        $this->assertStringContainsString('Repository', $violations[0]);
+    }
+
+    public function testFailsWhenIntegrationImportsController(): void
+    {
+        mkdir($this->tmpDir . '/src/Integration', 0777, true);
+        file_put_contents($this->tmpDir . '/src/Integration/PaymentGateway.php', <<<'PHP'
+        <?php
+        namespace App\Integration\Stripe;
+        use App\Controller\Order\Show;
+        class PaymentGateway {}
+        PHP);
+
+        $violations = $this->validator->validate($this->tmpDir);
+        $this->assertCount(1, $violations);
+        $this->assertStringContainsString('Integration/PaymentGateway.php', $violations[0]);
+        $this->assertStringContainsString('Controller', $violations[0]);
+    }
+
+    public function testFailsWhenControllerImportsIntegration(): void
+    {
+        mkdir($this->tmpDir . '/src/Integration', 0777, true);
+        file_put_contents($this->tmpDir . '/src/Controller/Pay.php', <<<'PHP'
+        <?php
+        namespace App\Controller;
+        use App\Integration\Stripe\PaymentGateway;
+        class Pay { public function __invoke() {} }
+        PHP);
+
+        $violations = $this->validator->validate($this->tmpDir);
+        $this->assertCount(1, $violations);
+        $this->assertStringContainsString('Controller/Pay.php', $violations[0]);
+        $this->assertStringContainsString('Integration directly', $violations[0]);
+    }
+
+    public function testFailsWhenRepositoryImportsIntegration(): void
+    {
+        mkdir($this->tmpDir . '/src/Integration', 0777, true);
+        file_put_contents($this->tmpDir . '/src/Repository/OrderRepository.php', <<<'PHP'
+        <?php
+        namespace App\Repository;
+        use App\Integration\Stripe\PaymentGateway;
+        class OrderRepository {}
+        PHP);
+
+        $violations = $this->validator->validate($this->tmpDir);
+        $this->assertCount(1, $violations);
+        $this->assertStringContainsString('Repository/OrderRepository.php', $violations[0]);
+        $this->assertStringContainsString('Integration', $violations[0]);
+    }
+
+    public function testFailsWhenEntityImportsIntegration(): void
+    {
+        file_put_contents($this->tmpDir . '/src/Entity/Order.php', <<<'PHP'
+        <?php
+        namespace App\Entity;
+        use App\Integration\Stripe\PaymentGateway;
+        class Order {}
+        PHP);
+
+        $violations = $this->validator->validate($this->tmpDir);
+        $this->assertCount(1, $violations);
+        $this->assertStringContainsString('Entity/Order.php', $violations[0]);
+        $this->assertStringContainsString('Integration', $violations[0]);
+    }
+
+    public function testFailsWhenCommandImportsIntegration(): void
+    {
+        mkdir($this->tmpDir . '/src/Command', 0777, true);
+        file_put_contents($this->tmpDir . '/src/Command/SyncPayments.php', <<<'PHP'
+        <?php
+        namespace App\Command;
+        use App\Integration\Stripe\PaymentGateway;
+        class SyncPayments {}
+        PHP);
+
+        $violations = $this->validator->validate($this->tmpDir);
+        $this->assertCount(1, $violations);
+        $this->assertStringContainsString('Command/SyncPayments.php', $violations[0]);
+        $this->assertStringContainsString('Integration directly', $violations[0]);
+    }
+
     public function testHandlesSubdirectories(): void
     {
         mkdir($this->tmpDir . '/src/Controller/Order', 0777, true);

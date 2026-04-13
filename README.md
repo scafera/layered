@@ -32,7 +32,7 @@ Command  ↗         ↘ Integration ↗
 
 ## Validators
 
-Eleven validators enforce the layered conventions:
+Twelve validators enforce the layered conventions:
 
 | Validator | Rule |
 |-----------|------|
@@ -46,6 +46,7 @@ Eleven validators enforce the layered conventions:
 | **Service final** | All services must be declared `final` |
 | **Namespace conventions** | PSR-4 namespace must match file path |
 | **Layer dependencies** | Enforces downward-only dependency flow; Integration sits alongside Repository as a sibling |
+| **Integration naming** | Must be in vendor subfolder; class name must not repeat vendor prefix |
 | **No implicit execution** | No `EventSubscriberInterface` or `#[AsEventListener]` in userland |
 
 ## Advisors
