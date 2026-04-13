@@ -12,15 +12,23 @@ All execution is explicit: no event subscribers, no listeners, no auto-discovere
 
 ## Architecture model
 
-The package organizes application code into five layers:
+The package organizes application code into six layers:
 
 | Layer | Purpose |
 |-------|---------|
 | `Controller/` | Single-action invokables — delegate to services, no business logic |
 | `Service/` | All business logic lives here |
 | `Repository/` | Data access repositories |
+| `Integration/` | Third-party service wrappers (Stripe, Mailgun, external APIs) |
 | `Entity/` | Domain data |
 | `Command/` | CLI entry points via `#[AsCommand]` |
+
+Dependencies flow downward. Repository and Integration are siblings — both called by Service, neither depends on the other:
+
+```
+Controller → Service → Repository   → Entity
+Command  ↗         ↘ Integration ↗
+```
 
 ## Validators
 
@@ -37,7 +45,7 @@ Eleven validators enforce the layered conventions:
 | **Service location** | Only recognized directories under `src/` |
 | **Service final** | All services must be declared `final` |
 | **Namespace conventions** | PSR-4 namespace must match file path |
-| **Layer dependencies** | Enforces downward-only dependency flow (Controller → Service → Repository → Entity) |
+| **Layer dependencies** | Enforces downward-only dependency flow; Integration sits alongside Repository as a sibling |
 | **No implicit execution** | No `EventSubscriberInterface` or `#[AsEventListener]` in userland |
 
 ## Advisors
@@ -74,6 +82,7 @@ src/
 ├── Command/       ← #[AsCommand], delegate to services
 ├── Service/       ← all business logic
 ├── Repository/    ← data access
+├── Integration/   ← third-party service wrappers
 └── Entity/        ← domain data
 tests/
 ├── Controller/    ← one test per controller

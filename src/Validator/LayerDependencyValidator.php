@@ -17,23 +17,33 @@ final class LayerDependencyValidator implements ValidatorInterface
         'Controller' => [
             'App\\Entity' => 'import Entity directly — use a Service instead',
             'App\\Repository' => 'import Repository directly — use a Service instead',
+            'App\\Integration' => 'import Integration directly — use a Service instead',
             'App\\Command' => 'import Command — controllers must not depend on console commands',
         ],
         'Repository' => [
             'App\\Controller' => 'import Controller — repositories must not depend on controllers',
             'App\\Service' => 'import Service — repositories must not depend on services',
+            'App\\Integration' => 'import Integration — repositories must not depend on integrations',
             'App\\Command' => 'import Command — repositories must not depend on console commands',
         ],
         'Entity' => [
             'App\\Controller' => 'import Controller — entities must not depend on any other layer',
             'App\\Service' => 'import Service — entities must not depend on any other layer',
             'App\\Repository' => 'import Repository — entities must not depend on any other layer',
+            'App\\Integration' => 'import Integration — entities must not depend on any other layer',
             'App\\Command' => 'import Command — entities must not depend on any other layer',
         ],
         'Command' => [
             'App\\Controller' => 'import Controller — commands must not depend on controllers',
             'App\\Entity' => 'import Entity directly — use a Service instead',
             'App\\Repository' => 'import Repository directly — use a Service instead',
+            'App\\Integration' => 'import Integration directly — use a Service instead',
+        ],
+        'Integration' => [
+            'App\\Controller' => 'import Controller — integrations must not depend on controllers',
+            'App\\Service' => 'import Service — integrations must not depend on services',
+            'App\\Repository' => 'import Repository — integrations must not depend on repositories',
+            'App\\Command' => 'import Command — integrations must not depend on console commands',
         ],
     ];
 
