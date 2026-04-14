@@ -98,4 +98,19 @@ final class LayeredArchitecture implements ArchitecturePackageInterface
     {
         return ['dir' => 'src/Entity', 'namespace' => 'App\\Entity'];
     }
+
+    public function getTranslationsDir(): ?string
+    {
+        return 'support/translations';
+    }
+
+    public function getStorageDir(): ?string
+    {
+        return 'var/uploads';
+    }
+
+    public function getAssetsDir(): ?string
+    {
+        return 'templates/assets';
+    }
 }
