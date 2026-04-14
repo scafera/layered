@@ -51,6 +51,7 @@ final class LayeredArchitecture implements ArchitecturePackageInterface
             'src/Service' => 'Business logic services',
             'src/Entity' => 'Doctrine entities',
             'src/Repository' => 'Data access repositories',
+            'src/Form' => 'Complex form definitions (Symfony Form types allowed)',
             'src/Integration' => 'Third-party service wrappers',
             'src/Command' => 'Console commands',
             'tests/Controller' => 'Controller tests (WebTestCase)',

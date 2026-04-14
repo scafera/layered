@@ -339,6 +339,80 @@ class LayerDependencyValidatorTest extends TestCase
         $this->assertStringContainsString('Integration directly', $violations[0]);
     }
 
+    public function testPassesWhenControllerImportsForm(): void
+    {
+        mkdir($this->tmpDir . '/src/Form', 0777, true);
+        file_put_contents($this->tmpDir . '/src/Controller/CreateOrder.php', <<<'PHP'
+        <?php
+        namespace App\Controller;
+        use App\Form\OrderForm;
+        class CreateOrder { public function __invoke() {} }
+        PHP);
+
+        $this->assertSame([], $this->validator->validate($this->tmpDir));
+    }
+
+    public function testFailsWhenServiceImportsForm(): void
+    {
+        mkdir($this->tmpDir . '/src/Form', 0777, true);
+        file_put_contents($this->tmpDir . '/src/Service/OrderProcessor.php', <<<'PHP'
+        <?php
+        namespace App\Service;
+        use App\Form\OrderForm;
+        class OrderProcessor {}
+        PHP);
+
+        $violations = $this->validator->validate($this->tmpDir);
+        $this->assertCount(1, $violations);
+        $this->assertStringContainsString('Service/OrderProcessor.php', $violations[0]);
+        $this->assertStringContainsString('Form', $violations[0]);
+    }
+
+    public function testFailsWhenFormImportsRepository(): void
+    {
+        mkdir($this->tmpDir . '/src/Form', 0777, true);
+        file_put_contents($this->tmpDir . '/src/Form/OrderForm.php', <<<'PHP'
+        <?php
+        namespace App\Form;
+        use App\Repository\OrderRepository;
+        class OrderForm {}
+        PHP);
+
+        $violations = $this->validator->validate($this->tmpDir);
+        $this->assertCount(1, $violations);
+        $this->assertStringContainsString('Form/OrderForm.php', $violations[0]);
+        $this->assertStringContainsString('Repository', $violations[0]);
+    }
+
+    public function testFailsWhenFormImportsService(): void
+    {
+        mkdir($this->tmpDir . '/src/Form', 0777, true);
+        file_put_contents($this->tmpDir . '/src/Form/OrderForm.php', <<<'PHP'
+        <?php
+        namespace App\Form;
+        use App\Service\OrderProcessor;
+        class OrderForm {}
+        PHP);
+
+        $violations = $this->validator->validate($this->tmpDir);
+        $this->assertCount(1, $violations);
+        $this->assertStringContainsString('Form/OrderForm.php', $violations[0]);
+        $this->assertStringContainsString('Service', $violations[0]);
+    }
+
+    public function testPassesWhenFormImportsEntity(): void
+    {
+        mkdir($this->tmpDir . '/src/Form', 0777, true);
+        file_put_contents($this->tmpDir . '/src/Form/OrderForm.php', <<<'PHP'
+        <?php
+        namespace App\Form;
+        use App\Entity\Order;
+        class OrderForm {}
+        PHP);
+
+        $this->assertSame([], $this->validator->validate($this->tmpDir));
+    }
+
     public function testHandlesSubdirectories(): void
     {
         mkdir($this->tmpDir . '/src/Controller/Order', 0777, true);

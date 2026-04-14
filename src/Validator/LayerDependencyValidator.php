@@ -19,17 +19,31 @@ final class LayerDependencyValidator implements ValidatorInterface
             'App\\Repository' => 'import Repository directly — use a Service instead',
             'App\\Integration' => 'import Integration directly — use a Service instead',
             'App\\Command' => 'import Command — controllers must not depend on console commands',
+            // App\Form is allowed — controllers are the only layer that uses forms
+        ],
+        'Service' => [
+            'App\\Form' => 'import Form — forms are an HTTP concern, not business logic. Services receive DTOs, not form objects',
         ],
         'Repository' => [
             'App\\Controller' => 'import Controller — repositories must not depend on controllers',
             'App\\Service' => 'import Service — repositories must not depend on services',
+            'App\\Form' => 'import Form — repositories must not depend on forms',
             'App\\Integration' => 'import Integration — repositories must not depend on integrations',
             'App\\Command' => 'import Command — repositories must not depend on console commands',
+        ],
+        'Form' => [
+            'App\\Controller' => 'import Controller — forms must not depend on controllers',
+            'App\\Service' => 'import Service — forms must not contain business logic',
+            'App\\Repository' => 'import Repository — forms must not query the database (receive data, don\'t fetch it)',
+            'App\\Integration' => 'import Integration — forms must not call third-party services',
+            'App\\Command' => 'import Command — forms must not depend on console commands',
+            // App\Entity is allowed — forms may reference entities for type hints and structure
         ],
         'Entity' => [
             'App\\Controller' => 'import Controller — entities must not depend on any other layer',
             'App\\Service' => 'import Service — entities must not depend on any other layer',
             'App\\Repository' => 'import Repository — entities must not depend on any other layer',
+            'App\\Form' => 'import Form — entities must not depend on any other layer',
             'App\\Integration' => 'import Integration — entities must not depend on any other layer',
             'App\\Command' => 'import Command — entities must not depend on any other layer',
         ],
@@ -37,12 +51,14 @@ final class LayerDependencyValidator implements ValidatorInterface
             'App\\Controller' => 'import Controller — commands must not depend on controllers',
             'App\\Entity' => 'import Entity directly — use a Service instead',
             'App\\Repository' => 'import Repository directly — use a Service instead',
+            'App\\Form' => 'import Form — commands must not depend on forms',
             'App\\Integration' => 'import Integration directly — use a Service instead',
         ],
         'Integration' => [
             'App\\Controller' => 'import Controller — integrations must not depend on controllers',
             'App\\Service' => 'import Service — integrations must not depend on services',
             'App\\Repository' => 'import Repository — integrations must not depend on repositories',
+            'App\\Form' => 'import Form — integrations must not depend on forms',
             'App\\Command' => 'import Command — integrations must not depend on console commands',
         ],
     ];

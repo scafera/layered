@@ -8,7 +8,7 @@ use Scafera\Kernel\Contract\ValidatorInterface;
 
 final class ServiceLocationValidator implements ValidatorInterface
 {
-    private const ALLOWED_DIRS = ['Controller', 'Service', 'Entity', 'Repository', 'Integration', 'Command'];
+    private const ALLOWED_DIRS = ['Controller', 'Service', 'Entity', 'Repository', 'Form', 'Integration', 'Command'];
 
     public function getName(): string
     {
