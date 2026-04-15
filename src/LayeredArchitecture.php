@@ -114,4 +114,9 @@ final class LayeredArchitecture implements ArchitecturePackageInterface
     {
         return 'resources/assets';
     }
+
+    public function getTemplatesDir(): ?string
+    {
+        return 'resources/templates';
+    }
 }

@@ -74,4 +74,9 @@ class LayeredArchitectureTest extends TestCase
     {
         $this->assertCount(1, $this->arch->getAdvisors());
     }
+
+    public function testTemplatesDir(): void
+    {
+        $this->assertSame('resources/templates', $this->arch->getTemplatesDir());
+    }
 }
