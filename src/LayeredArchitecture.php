@@ -102,7 +102,7 @@ final class LayeredArchitecture implements ArchitecturePackageInterface
 
     public function getTranslationsDir(): ?string
     {
-        return 'support/translations';
+        return 'resources/translations';
     }
 
     public function getStorageDir(): ?string
@@ -112,6 +112,6 @@ final class LayeredArchitecture implements ArchitecturePackageInterface
 
     public function getAssetsDir(): ?string
     {
-        return 'templates/assets';
+        return 'resources/assets';
     }
 }
