@@ -9,6 +9,11 @@ use Scafera\Kernel\Tool\FileFinder;
 
 final class ControllerFinalValidator implements ValidatorInterface
 {
+    public function getId(): string
+    {
+        return 'layered.controller-final';
+    }
+
     public function getName(): string
     {
         return 'Controllers are final';

@@ -8,6 +8,11 @@ use Scafera\Kernel\Contract\ValidatorInterface;
 
 final class TestsDirectoryValidator implements ValidatorInterface
 {
+    public function getId(): string
+    {
+        return 'layered.tests-directory';
+    }
+
     public function getName(): string
     {
         return 'Tests directory';

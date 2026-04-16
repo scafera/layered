@@ -9,6 +9,11 @@ use Scafera\Kernel\Tool\FileFinder;
 
 final class NamespaceConventionValidator implements ValidatorInterface
 {
+    public function getId(): string
+    {
+        return 'layered.namespace-conventions';
+    }
+
     public function getName(): string
     {
         return 'Namespace conventions';

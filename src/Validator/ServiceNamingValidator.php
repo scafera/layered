@@ -9,6 +9,11 @@ use Scafera\Kernel\Tool\FileFinder;
 
 final class ServiceNamingValidator implements ValidatorInterface
 {
+    public function getId(): string
+    {
+        return 'layered.service-naming';
+    }
+
     public function getName(): string
     {
         return 'Service naming';

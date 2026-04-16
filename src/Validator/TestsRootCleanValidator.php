@@ -18,6 +18,11 @@ final class TestsRootCleanValidator implements ValidatorInterface
         '.env.test.local',
     ];
 
+    public function getId(): string
+    {
+        return 'layered.tests-root-clean';
+    }
+
     public function getName(): string
     {
         return 'tests root cleanliness';

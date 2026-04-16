@@ -9,6 +9,11 @@ use Scafera\Kernel\Tool\FileFinder;
 
 final class CommandTestParityValidator implements ValidatorInterface
 {
+    public function getId(): string
+    {
+        return 'layered.command-test-parity';
+    }
+
     public function getName(): string
     {
         return 'Command test parity';

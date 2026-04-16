@@ -126,6 +126,11 @@ final class LayeredArchitecture implements ArchitecturePackageInterface
         ];
     }
 
+    public function getIgnoredRules(): array
+    {
+        return [];
+    }
+
     public function getEntityMapping(): ?array
     {
         return ['dir' => 'src/Entity', 'namespace' => 'App\\Entity'];

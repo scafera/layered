@@ -10,6 +10,11 @@ final class ServiceLocationValidator implements ValidatorInterface
 {
     private const ALLOWED_DIRS = ['Controller', 'Service', 'Entity', 'Repository', 'Form', 'Integration', 'Command'];
 
+    public function getId(): string
+    {
+        return 'layered.service-location';
+    }
+
     public function getName(): string
     {
         return 'Service location';

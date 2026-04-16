@@ -9,6 +9,11 @@ use Scafera\Kernel\Tool\FileFinder;
 
 final class ControllerNamingValidator implements ValidatorInterface
 {
+    public function getId(): string
+    {
+        return 'layered.controller-naming';
+    }
+
     public function getName(): string
     {
         return 'Controller naming';

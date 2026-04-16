@@ -9,6 +9,11 @@ use Scafera\Kernel\Tool\FileFinder;
 
 final class ServiceFinalValidator implements ValidatorInterface
 {
+    public function getId(): string
+    {
+        return 'layered.service-final';
+    }
+
     public function getName(): string
     {
         return 'Services are final';

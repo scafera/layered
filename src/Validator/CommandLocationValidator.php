@@ -9,6 +9,11 @@ use Scafera\Kernel\Tool\FileFinder;
 
 final class CommandLocationValidator implements ValidatorInterface
 {
+    public function getId(): string
+    {
+        return 'layered.command-location';
+    }
+
     public function getName(): string
     {
         return 'Command location';

@@ -9,6 +9,11 @@ use Scafera\Kernel\Tool\ToleratedFiles;
 
 final class SrcRootCleanValidator implements ValidatorInterface
 {
+    public function getId(): string
+    {
+        return 'layered.src-root-clean';
+    }
+
     public function getName(): string
     {
         return 'src root cleanliness';

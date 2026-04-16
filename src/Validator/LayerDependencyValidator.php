@@ -63,6 +63,11 @@ final class LayerDependencyValidator implements ValidatorInterface
         ],
     ];
 
+    public function getId(): string
+    {
+        return 'layered.layer-dependencies';
+    }
+
     public function getName(): string
     {
         return 'Layer dependencies';

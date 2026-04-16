@@ -9,6 +9,11 @@ use Scafera\Kernel\Tool\FileFinder;
 
 final class CommandFinalValidator implements ValidatorInterface
 {
+    public function getId(): string
+    {
+        return 'layered.command-final';
+    }
+
     public function getName(): string
     {
         return 'Commands are final';

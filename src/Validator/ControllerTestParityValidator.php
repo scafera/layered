@@ -9,6 +9,11 @@ use Scafera\Kernel\Tool\FileFinder;
 
 final class ControllerTestParityValidator implements ValidatorInterface
 {
+    public function getId(): string
+    {
+        return 'layered.controller-test-parity';
+    }
+
     public function getName(): string
     {
         return 'Controller test parity';

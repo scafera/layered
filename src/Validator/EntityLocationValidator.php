@@ -9,6 +9,11 @@ use Scafera\Kernel\Tool\FileFinder;
 
 final class EntityLocationValidator implements ValidatorInterface
 {
+    public function getId(): string
+    {
+        return 'layered.entity-location';
+    }
+
     public function getName(): string
     {
         return 'Entity location';

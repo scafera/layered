@@ -9,6 +9,11 @@ use Scafera\Kernel\Tool\FileFinder;
 
 final class RepositoryFinalValidator implements ValidatorInterface
 {
+    public function getId(): string
+    {
+        return 'layered.repository-final';
+    }
+
     public function getName(): string
     {
         return 'Repositories are final';

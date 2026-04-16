@@ -9,6 +9,11 @@ use Scafera\Kernel\Tool\FileFinder;
 
 final class SingleActionControllerValidator implements ValidatorInterface
 {
+    public function getId(): string
+    {
+        return 'layered.single-action-controllers';
+    }
+
     public function getName(): string
     {
         return 'Single-action controllers';

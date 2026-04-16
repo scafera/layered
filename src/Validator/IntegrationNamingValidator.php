@@ -9,6 +9,11 @@ use Scafera\Kernel\Tool\FileFinder;
 
 final class IntegrationNamingValidator implements ValidatorInterface
 {
+    public function getId(): string
+    {
+        return 'layered.integration-naming';
+    }
+
     public function getName(): string
     {
         return 'Integration naming';

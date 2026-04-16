@@ -8,6 +8,11 @@ use Scafera\Kernel\Contract\AdvisorInterface;
 
 class TestSyncAdvisor implements AdvisorInterface
 {
+    public function getId(): string
+    {
+        return 'layered.test-sync';
+    }
+
     public function getName(): string
     {
         return 'Test sync';

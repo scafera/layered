@@ -11,6 +11,11 @@ final class ConfigFileWhitelistValidator implements ValidatorInterface
 {
     private const ALLOWED = ['config.yaml', 'config.local.yaml'];
 
+    public function getId(): string
+    {
+        return 'layered.config-file-whitelist';
+    }
+
     public function getName(): string
     {
         return 'Config directory whitelist';

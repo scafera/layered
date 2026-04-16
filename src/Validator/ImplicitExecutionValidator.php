@@ -9,6 +9,11 @@ use Scafera\Kernel\Tool\FileFinder;
 
 final class ImplicitExecutionValidator implements ValidatorInterface
 {
+    public function getId(): string
+    {
+        return 'layered.no-implicit-execution';
+    }
+
     public function getName(): string
     {
         return 'No implicit execution';

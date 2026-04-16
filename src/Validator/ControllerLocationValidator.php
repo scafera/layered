@@ -9,6 +9,11 @@ use Scafera\Kernel\Tool\FileFinder;
 
 final class ControllerLocationValidator implements ValidatorInterface
 {
+    public function getId(): string
+    {
+        return 'layered.controller-location';
+    }
+
     public function getName(): string
     {
         return 'Controller location';
