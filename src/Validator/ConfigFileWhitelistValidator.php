@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Scafera\Layered\Validator;
 
 use Scafera\Kernel\Contract\ValidatorInterface;
+use Scafera\Kernel\Tool\ToleratedFiles;
 
 final class ConfigFileWhitelistValidator implements ValidatorInterface
 {
     private const ALLOWED = ['config.yaml', 'config.local.yaml'];
-    private const TOLERATED = ['.gitkeep', '.gitignore'];
 
     public function getName(): string
     {
@@ -34,7 +34,7 @@ final class ConfigFileWhitelistValidator implements ValidatorInterface
                 continue;
             }
 
-            if (in_array($name, self::TOLERATED, true)) {
+            if (in_array($name, ToleratedFiles::names(), true)) {
                 continue;
             }
 

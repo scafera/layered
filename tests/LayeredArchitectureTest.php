@@ -62,7 +62,7 @@ class LayeredArchitectureTest extends TestCase
 
     public function testValidatorsReturnInstances(): void
     {
-        $this->assertCount(18, $this->arch->getValidators());
+        $this->assertCount(23, $this->arch->getValidators());
     }
 
     public function testGeneratorsReturnInstances(): void

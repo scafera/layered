@@ -10,12 +10,14 @@ use Scafera\Layered\Generator\CommandGenerator;
 use Scafera\Layered\Generator\ControllerGenerator;
 use Scafera\Layered\Generator\ServiceGenerator;
 use Scafera\Layered\Validator\CommandFinalValidator;
+use Scafera\Layered\Validator\CommandLocationValidator;
 use Scafera\Layered\Validator\CommandTestParityValidator;
 use Scafera\Layered\Validator\ConfigFileWhitelistValidator;
 use Scafera\Layered\Validator\ControllerFinalValidator;
 use Scafera\Layered\Validator\ControllerLocationValidator;
 use Scafera\Layered\Validator\ControllerNamingValidator;
 use Scafera\Layered\Validator\ControllerTestParityValidator;
+use Scafera\Layered\Validator\EntityLocationValidator;
 use Scafera\Layered\Validator\ImplicitExecutionValidator;
 use Scafera\Layered\Validator\IntegrationFinalValidator;
 use Scafera\Layered\Validator\LayerDependencyValidator;
@@ -26,7 +28,10 @@ use Scafera\Layered\Validator\ServiceFinalValidator;
 use Scafera\Layered\Validator\ServiceLocationValidator;
 use Scafera\Layered\Validator\IntegrationNamingValidator;
 use Scafera\Layered\Validator\ServiceNamingValidator;
+use Scafera\Layered\Validator\SrcRootCleanValidator;
+use Scafera\Layered\Validator\SupportRootCleanValidator;
 use Scafera\Layered\Validator\TestsDirectoryValidator;
+use Scafera\Layered\Validator\TestsRootCleanValidator;
 
 final class LayeredArchitecture implements ArchitecturePackageInterface
 {
@@ -68,24 +73,40 @@ final class LayeredArchitecture implements ArchitecturePackageInterface
     public function getValidators(): array
     {
         return [
+            // Directory cleanliness
             new TestsDirectoryValidator(),
             new ConfigFileWhitelistValidator(),
+            new SrcRootCleanValidator(),
+            new SupportRootCleanValidator(),
+            new TestsRootCleanValidator(),
+
+            // Controllers
             new ControllerLocationValidator(),
             new ControllerFinalValidator(),
             new ControllerTestParityValidator(),
+            new ControllerNamingValidator(),
+            new SingleActionControllerValidator(),
+
+            // Commands
             new CommandTestParityValidator(),
             new CommandFinalValidator(),
+            new CommandLocationValidator(),
+
+            // Entities
+            new EntityLocationValidator(),
+
+            // Services / Repositories / Integrations / layers at large
             new ServiceLocationValidator(),
             new ServiceFinalValidator(),
+            new ServiceNamingValidator(),
             new RepositoryFinalValidator(),
+            new IntegrationNamingValidator(),
+            new IntegrationFinalValidator(),
+
+            // Cross-cutting
             new NamespaceConventionValidator(),
             new LayerDependencyValidator(),
             new ImplicitExecutionValidator(),
-            new SingleActionControllerValidator(),
-            new ControllerNamingValidator(),
-            new ServiceNamingValidator(),
-            new IntegrationNamingValidator(),
-            new IntegrationFinalValidator(),
         ];
     }
 
