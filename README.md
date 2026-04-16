@@ -2,6 +2,18 @@
 
 Scafera Layered is an opinionated architecture package for the Scafera framework. It defines and enforces a strict, layered approach for building applications.
 
+> **Provides:** Opinionated layered architecture for Scafera — defines six layers (`Controller/`, `Service/`, `Repository/`, `Integration/`, `Entity/`, `Command/`) with downward-only dependencies, and enforces them at build time via validators, advisors, and code generators run through `scafera validate` and `scafera make:*`.
+>
+> **Depends on:** A Scafera host project where the kernel discovers this package via `extra.scafera-architecture` in `composer.json`. User code lives in the six layer directories under `src/`.
+>
+> **Extension points:**
+> - Layer directories — user code goes in `src/Controller/`, `src/Service/`, `src/Repository/`, `src/Integration/`, `src/Entity/`, `src/Command/`; each has naming/location rules enforced at build time
+> - Generators — `scafera make:controller`, `make:service`, `make:command` scaffold a class + test with conventions baked in; support nested names (e.g. `Order/Create`)
+> - Validators and advisors — contributed via kernel's `scafera.validator` and `scafera.advisor` tags; run by `scafera validate` in CI
+> - Kernel primitives — user controllers use `#[Route]` (kernel), commands use `#[AsCommand]` (kernel)
+>
+> **Not responsible for:** Capability concerns — persistence (`scafera/database`), presentation (`scafera/frontend`), authentication (`scafera/auth`), forms (`scafera/form`), logging (`scafera/log`), assets (`scafera/asset`), external integrations (`scafera/integration`), translations (`scafera/translate`), file handling (`scafera/file`) · implicit execution via event subscribers or listeners (blocked by `ImplicitExecutionValidator`) · flexible or non-layered architectures (use a different architecture package).
+
 ## Philosophy
 
 In Scafera, architecture is not a guideline — it is an installed package.
