@@ -1,0 +1,103 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Scafera\Layered\Tests\Validator;
+
+use PHPUnit\Framework\TestCase;
+use Scafera\Layered\Validator\RepositoryFinalValidator;
+
+class RepositoryFinalValidatorTest extends TestCase
+{
+    private RepositoryFinalValidator $validator;
+    private string $tmpDir;
+
+    protected function setUp(): void
+    {
+        $this->validator = new RepositoryFinalValidator();
+        $this->tmpDir = sys_get_temp_dir() . '/scafera_test_' . uniqid();
+        mkdir($this->tmpDir . '/src/Repository', 0777, true);
+    }
+
+    protected function tearDown(): void
+    {
+        $this->removeDir($this->tmpDir);
+    }
+
+    public function testPassesWhenClassIsFinal(): void
+    {
+        file_put_contents($this->tmpDir . '/src/Repository/OrderRepository.php', <<<'PHP'
+        <?php
+        final class OrderRepository {}
+        PHP);
+
+        $this->assertSame([], $this->validator->validate($this->tmpDir));
+    }
+
+    public function testFailsWhenClassIsNotFinal(): void
+    {
+        file_put_contents($this->tmpDir . '/src/Repository/OrderRepository.php', <<<'PHP'
+        <?php
+        class OrderRepository {}
+        PHP);
+
+        $violations = $this->validator->validate($this->tmpDir);
+        $this->assertCount(1, $violations);
+        $this->assertStringContainsString('src/Repository/OrderRepository.php', $violations[0]);
+        $this->assertStringContainsString('not declared final', $violations[0]);
+    }
+
+    public function testSkipsFilesWithoutClassDeclaration(): void
+    {
+        file_put_contents($this->tmpDir . '/src/Repository/helpers.php', <<<'PHP'
+        <?php
+        function helper(): void {}
+        PHP);
+
+        $this->assertSame([], $this->validator->validate($this->tmpDir));
+    }
+
+    public function testPassesWhenRepositoryDirDoesNotExist(): void
+    {
+        $emptyDir = sys_get_temp_dir() . '/scafera_empty_' . uniqid();
+        mkdir($emptyDir);
+
+        $this->assertSame([], $this->validator->validate($emptyDir));
+
+        rmdir($emptyDir);
+    }
+
+    public function testHandlesSubdirectories(): void
+    {
+        mkdir($this->tmpDir . '/src/Repository/Billing', 0777, true);
+
+        file_put_contents($this->tmpDir . '/src/Repository/Billing/InvoiceRepository.php', <<<'PHP'
+        <?php
+        final class InvoiceRepository {}
+        PHP);
+
+        file_put_contents($this->tmpDir . '/src/Repository/Billing/ChargeRepository.php', <<<'PHP'
+        <?php
+        class ChargeRepository {}
+        PHP);
+
+        $violations = $this->validator->validate($this->tmpDir);
+        $this->assertCount(1, $violations);
+        $this->assertStringContainsString('ChargeRepository.php', $violations[0]);
+    }
+
+    private function removeDir(string $dir): void
+    {
+        if (!is_dir($dir)) {
+            return;
+        }
+        $it = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST,
+        );
+        foreach ($it as $file) {
+            $file->isDir() ? rmdir($file->getPathname()) : unlink($file->getPathname());
+        }
+        rmdir($dir);
+    }
+}

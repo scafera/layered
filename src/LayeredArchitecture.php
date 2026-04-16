@@ -9,12 +9,17 @@ use Scafera\Layered\Advisor\TestSyncAdvisor;
 use Scafera\Layered\Generator\CommandGenerator;
 use Scafera\Layered\Generator\ControllerGenerator;
 use Scafera\Layered\Generator\ServiceGenerator;
+use Scafera\Layered\Validator\CommandFinalValidator;
 use Scafera\Layered\Validator\CommandTestParityValidator;
+use Scafera\Layered\Validator\ConfigFileWhitelistValidator;
+use Scafera\Layered\Validator\ControllerFinalValidator;
 use Scafera\Layered\Validator\ControllerLocationValidator;
 use Scafera\Layered\Validator\ControllerNamingValidator;
 use Scafera\Layered\Validator\ControllerTestParityValidator;
 use Scafera\Layered\Validator\ImplicitExecutionValidator;
+use Scafera\Layered\Validator\IntegrationFinalValidator;
 use Scafera\Layered\Validator\LayerDependencyValidator;
+use Scafera\Layered\Validator\RepositoryFinalValidator;
 use Scafera\Layered\Validator\SingleActionControllerValidator;
 use Scafera\Layered\Validator\NamespaceConventionValidator;
 use Scafera\Layered\Validator\ServiceFinalValidator;
@@ -64,11 +69,15 @@ final class LayeredArchitecture implements ArchitecturePackageInterface
     {
         return [
             new TestsDirectoryValidator(),
+            new ConfigFileWhitelistValidator(),
             new ControllerLocationValidator(),
+            new ControllerFinalValidator(),
             new ControllerTestParityValidator(),
             new CommandTestParityValidator(),
+            new CommandFinalValidator(),
             new ServiceLocationValidator(),
             new ServiceFinalValidator(),
+            new RepositoryFinalValidator(),
             new NamespaceConventionValidator(),
             new LayerDependencyValidator(),
             new ImplicitExecutionValidator(),
@@ -76,6 +85,7 @@ final class LayeredArchitecture implements ArchitecturePackageInterface
             new ControllerNamingValidator(),
             new ServiceNamingValidator(),
             new IntegrationNamingValidator(),
+            new IntegrationFinalValidator(),
         ];
     }
 
