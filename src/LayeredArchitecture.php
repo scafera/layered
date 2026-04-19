@@ -29,6 +29,7 @@ use Scafera\Layered\Validator\ServiceLocationValidator;
 use Scafera\Layered\Validator\IntegrationNamingValidator;
 use Scafera\Layered\Validator\ServiceNamingValidator;
 use Scafera\Layered\Validator\SrcRootCleanValidator;
+use Scafera\Layered\Validator\StubTestValidator;
 use Scafera\Layered\Validator\SupportRootCleanValidator;
 use Scafera\Layered\Validator\TestsDirectoryValidator;
 use Scafera\Layered\Validator\TestsRootCleanValidator;
@@ -79,6 +80,7 @@ final class LayeredArchitecture implements ArchitecturePackageInterface
             new SrcRootCleanValidator(),
             new SupportRootCleanValidator(),
             new TestsRootCleanValidator(),
+            new StubTestValidator(),
 
             // Controllers
             new ControllerLocationValidator(),
